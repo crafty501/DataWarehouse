@@ -75,7 +75,7 @@ public class DB2ConnectionManager {
 	}
 
 	/**
-	 * Liefert eine Verbindung zur DB2 zur�ck
+	 * Liefert eine Verbindung zur DB2 zurück
 	 * 
 	 * @return Connection
 	 */
