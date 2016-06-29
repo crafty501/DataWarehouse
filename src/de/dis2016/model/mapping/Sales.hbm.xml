@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="de.dis2016.model.Sales" table="sales">
+		<id name="id" column="id">
+			<generator class="increment" />
+		</id>
+		<one-to-one name="artikel" class="Artikel"/>
+		<one-to-one name="shop" class="Shop"/>
+		
+		<property name="datum" type="date" column="datum" />
+		<property name="verkauft" type="integer" column="verkauft" />
+		<property name="umsatz" type="dezimal" column="umsatz" />
+					
+	</class>
+</hibernate-mapping>

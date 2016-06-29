@@ -7,8 +7,9 @@
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
-		<property name="firstName" type="string" column="vorname" />
-		<property name="name" type="string" column="nachname" />
-		<property name="adress" type="string" column="adresse" />
+		<property name="name" type="string" column="name" />
+		<property name="stadt" type="string" column="stadt" />
+		<property name="region" type="string" column="region" />
+		<property name="land" type="string" column="land" />
 	</class>
 </hibernate-mapping>

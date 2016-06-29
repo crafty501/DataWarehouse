@@ -17,10 +17,9 @@
 
 		<!-- Drop and re-create the database schema on startup -->
 		<!--  <property name="hbm2ddl.auto">update</property>-->
-		<property name="hbm2ddl.auto">update</property>
-		<mapping resource="de/dis2016/model/mapping/Person.hbm.xml" />
-		<mapping resource="de/dis2016/model/mapping/Makler.hbm.xml" />
-		<mapping resource="de/dis2016/model/mapping/Estate.hbm.xml" />
-		<mapping resource="de/dis2016/model/mapping/Contract.hbm.xml" />
+		<property name="hbm2ddl.auto">create</property> <!-- update -->
+		<mapping resource="de/dis2016/model/mapping/Sales.hbm.xml" />
+		<mapping resource="de/dis2016/model/mapping/Artikel.hbm.xml" />
+		<mapping resource="de/dis2016/model/mapping/Shop.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>
