@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 
 /**
  * Diese Klasse soll die csv-datei lesen können 
@@ -15,8 +18,9 @@ import java.nio.charset.Charset;
  * @author callya
  *
  */
-public class CSV {
+public class CSV extends DB2ConnectionManager{
 
+	String anfrage = "INSERT INTO table (DATUM,LADEN) VALUES (?,?)";
 	
 	
 	public CSV(){
@@ -25,8 +29,17 @@ public class CSV {
 	
 	/**
 	 * Diese Methode erstellt 
+	 * @throws  
 	 */
 	public void ReadLines(){
+		
+		try {
+			PreparedStatement pstmt = con.prepareStatement(anfrage);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		
 		String line;
 		try {
