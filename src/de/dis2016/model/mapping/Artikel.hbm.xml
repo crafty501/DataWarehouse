@@ -6,8 +6,8 @@
 	<class name="de.dis2016.model.Artikel" table="artikel">
 		<id name="name" type="string" column="name" />
 		<property name="preis" type="double" column="preis" />
-		<property name="groupname" type="string" column="groupname" />
-		<property name="familyname" type="string" column="familyname" />
-		<property name="categoryname" type="string" column="categoryname" />
+		<property name="gruppe" type="string" column="gruppe" />
+		<property name="familie" type="string" column="familie" />
+		<property name="kategorie" type="string" column="kategorie" />
 	</class>
 </hibernate-mapping>

@@ -9,9 +9,9 @@ public class startup {
 	public static void main(String[] args) throws ParseException {
 		
 		DBService dbService = new DBService();
-		//TODO Tabellen rein laden
-		//Yannicks part
-		CSV csv = new CSV(dbService);
+		dbService.createShop();
+		dbService.createArtikel();
+		CSV csv = new CSV();
 		csv.readFile();
 	}
 }

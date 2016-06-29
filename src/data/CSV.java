@@ -13,16 +13,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import de.dis2016.model.Artikel;
 import de.dis2016.model.Sales;
-import de.dis2016.model.Shop;
-
 
 /**
  * Diese Klasse soll die csv-datei lesen können 
@@ -34,13 +29,12 @@ import de.dis2016.model.Shop;
  */
 public class CSV{
 	
-	private DBService dbService;
 	private SimpleDateFormat dateFormat;
 	private NumberFormat numberFormat;
 	private SessionFactory sessionFactory;
+	private BufferedReader br;
 	
-	public CSV(DBService dbService){
-		this.dbService = dbService;
+	public CSV(){
 		dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 		numberFormat = NumberFormat.getInstance(Locale.FRANCE);
 		sessionFactory = new Configuration().configure().buildSessionFactory();
@@ -57,15 +51,13 @@ public class CSV{
 		try {
 		    InputStream fis = new FileInputStream("data/sales.csv");
 		    InputStreamReader isr = new InputStreamReader(fis, Charset.forName("ISO-8859-1"));
-		    BufferedReader br = new BufferedReader(isr);
+		    br = new BufferedReader(isr);
 		
 		    br.readLine();
-		    int count = 0;
 			Session session = sessionFactory.getCurrentSession();
 			session.beginTransaction();
-		    
+		    int i = 0;
 		    while ((line = br.readLine()) != null){
-		       count++;
 		    	String[] zeile = line.split(";");
 		    	
 		    	if(zeile.length != 5){
@@ -78,9 +70,9 @@ public class CSV{
 		        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
 		    	
 		    	String shop	= zeile[1];
-		    	String artikel    = zeile[2];
+		    	String artikel = zeile[2];
 		    	int verkauft = Integer.parseInt(zeile[3]);
-		    	String umsatz   = zeile[4];
+		    	String umsatz = zeile[4];
 		    	
 		    	sale.setArtikel(artikel);
 		    	sale.setDatum(sqlDate);
@@ -90,17 +82,16 @@ public class CSV{
 		    	sale.setVerkauft(verkauft);
 		    	
 		    	session.save(sale);
-		    	
-		    	if (count%20 == 0) {
-				     System.out.println(count);
+		    	i++;
+		    	if ( i % 2000 == 0 ) {
+		    	    session.flush();
+		    	    session.clear();
 		    	}
-		    	
 		    }
 		    session.getTransaction().commit();
 		 }catch (IOException e ){
 			System.out.println("Error in CSV-Class"+e.getMessage());
 		 }
-		System.out.println("CSV einlesen fertig!");
-		
+		 System.out.println("CSV einlesen fertig!");
 	}
 }

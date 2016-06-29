@@ -4,9 +4,9 @@ public class Artikel{
 
 	private String name;
 	private double preis;
-	private String groupname;
-	private String familyname;
-	private String categoryname;
+	private String gruppe;
+	private String familie;
+	private String kategorie;
 	
 	public Artikel() {}
 	
@@ -22,23 +22,23 @@ public class Artikel{
 	public void setPreis(double preis) {
 		this.preis = preis;
 	}
-	public String getGroupname() {
-		return groupname;
+	public String getGruppe() {
+		return gruppe;
 	}
-	public void setGroupname(String groupname) {
-		this.groupname = groupname;
+	public void setGruppe(String gruppe) {
+		this.gruppe = gruppe;
 	}
-	public String getFamilyname() {
-		return familyname;
+	public String getFamilie() {
+		return familie;
 	}
-	public void setFamilyname(String familyname) {
-		this.familyname = familyname;
+	public void setFamilie(String familie) {
+		this.familie = familie;
 	}
-	public String getCategoryname() {
-		return categoryname;
+	public String getKategorie() {
+		return kategorie;
 	}
-	public void setCategoryname(String categoryname) {
-		this.categoryname = categoryname;
+	public void setKategorie(String kategorie) {
+		this.kategorie = kategorie;
 	}
 	
 	
