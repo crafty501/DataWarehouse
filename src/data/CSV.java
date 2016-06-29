@@ -31,12 +31,22 @@ public class CSV {
 		String line;
 		try {
 		    InputStream fis = new FileInputStream("data/sales.csv");
-		    InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+		    InputStreamReader isr = new InputStreamReader(fis, Charset.forName("ISO-8859-1"));
 		    BufferedReader br = new BufferedReader(isr);
 		
 		    while ((line = br.readLine()) != null){
 		       
-		    	System.out.println(line);
+		    	String[] zeile = line.split(";");
+		    	
+		    	String date 	= zeile[0];
+		    	String store	= zeile[1];
+		    	String thing    = zeile[2];
+		    	String verkauft = zeile[3];
+		    	String umsatz   = zeile[4];
+		    	
+		    	
+		    	String Query = "INSERT INTO table (DATUM,LADEN) VALUES ('"+date+"')";
+		    	
 		    }
 		 }catch (IOException e ){
 			System.out.println("Error in CSV-Class"+e.getMessage());
