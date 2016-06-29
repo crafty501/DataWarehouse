@@ -1,9 +1,13 @@
+import data.CSV;
 
 public class startup {
 	
 	
 	public static void  main(){
 		
+		
+		CSV csv = new CSV();
+		csv.ReadLines();
 		
 	}
 }
