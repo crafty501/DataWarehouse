@@ -8,7 +8,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+import de.dis2016.model.Artikel;
 import de.dis2016.model.Sales;
+import de.dis2016.model.Shop;
 
 /**
  * Klasse zur Verwaltung aller Datenbank-Entitäten.
@@ -17,37 +19,16 @@ import de.dis2016.model.Sales;
  * schrittweise die Datenverwaltung in die Datenbank auszulagern. Wenn die
  * Arbeit erledigt ist, werden alle Sets dieser Klasse überflüssig.
  */
-public class ImmoService {
+public class DBService{
 	// Datensätze im Speicher
 
 	
 	private SessionFactory sessionFactory;
 
-	public ImmoService() {
+	public DBService() {
 		sessionFactory = new Configuration().configure().buildSessionFactory();
 	}
 	
-	
-	
-	private void deleteObject(Object o) {
-		Transaction tx = null;
-		Session session = sessionFactory.getCurrentSession();
-		try {
-			tx = session.beginTransaction();
-			session.delete(o);
-			tx.commit();
-		} catch (RuntimeException e) {
-			if (tx != null && tx.isActive()) {
-				try {
-					tx.rollback();
-				} catch (HibernateException e1) {
-					System.err.println("Error rolling back transaction");
-				}
-				throw e;
-			}
-		}
-	}
-
 	private void addObjekt(Object o) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -55,33 +36,31 @@ public class ImmoService {
 		session.getTransaction().commit();
 	}
 
-	private void updateObject(Object o) {
+	public void begin() {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
-		session.update(o);
-		session.getTransaction().commit();
-	}
-
-	
-
-	public void addContract(Sales sales) {
-		addObjekt(sales);
 	}
 	
 	
-	
-	
-	
-	
-	public List<Sales> getSales() {
+	public void addSales(Sales sales) {
 		Session session = sessionFactory.getCurrentSession();
-		
+		session.beginTransaction();
+	}
+	
+	public void addArtikel(Artikel artikel) {
+		addObjekt(artikel);
+	}
+	
+	public void addShop(Shop shop) {
+		addObjekt(shop);
+	}
+
+	public List<Sales> getSales() {
+		Session session = sessionFactory.getCurrentSession();	
 		session.beginTransaction();
 		@SuppressWarnings("unchecked")
 		List<Sales> list = (List<Sales>) session.createCriteria(Sales.class).list();
 		return list;
 	}
-
-	
 	
 }

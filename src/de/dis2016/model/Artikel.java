@@ -2,7 +2,6 @@ package de.dis2016.model;
 
 public class Artikel{
 
-	private int id;
 	private String name;
 	private double preis;
 	private String groupname;
@@ -11,12 +10,6 @@ public class Artikel{
 	
 	public Artikel() {}
 	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	public String getName() {
 		return name;
 	}

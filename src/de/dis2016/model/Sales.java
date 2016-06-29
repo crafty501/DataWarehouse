@@ -4,8 +4,8 @@ import java.sql.Date;
 
 public class Sales{
 
-	private Artikel artikel;
-	private Shop shop;
+	private String artikel;
+	private String shop;
 	private Date datum;
 	private int verkauft;
 	private double umsatz;
@@ -20,16 +20,16 @@ public class Sales{
 	
 	public Sales() {}
 	
-	public Artikel getArtikel() {
+	public String getArtikel() {
 		return artikel;
 	}
-	public void setArtikel(Artikel artikel) {
+	public void setArtikel(String artikel) {
 		this.artikel = artikel;
 	}
-	public Shop getShop() {
+	public String getShop() {
 		return shop;
 	}
-	public void setShop(Shop shop) {
+	public void setShop(String shop) {
 		this.shop = shop;
 	}
 	public Date getDatum() {

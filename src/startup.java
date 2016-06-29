@@ -1,14 +1,17 @@
+import java.text.ParseException;
+
 import data.CSV;
-import data.ImmoService;
+import data.DBService;
 
 public class startup {
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		
-		new ImmoService();
-		//CSV csv = new CSV();
-		//csv.ReadLines();
-		
+		DBService dbService = new DBService();
+		//TODO Tabellen rein laden
+		//Yannicks part
+		CSV csv = new CSV(dbService);
+		csv.readFile();
 	}
 }
