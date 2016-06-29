@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="de.dis2016.model.Estate" abstract="true">
+		<id name="id" column="id">
+			<generator class="increment" />
+		</id>
+		<property name="city" type="string" column="ort" />
+		<property name="postalCode" type="string" column="plz" />
+		<property name="street" type="string" column="strasse" />
+		<property name="streetNr" type="string" column="hausnummer" />
+		<property name="squareArea" type="integer" column="flaeche" />
+		<property name="Login" type="string" column="Login" />
+		<property name="personid" type="integer" column="personid" />
+		<property name="contractnr" type="integer" column="contractnr" />
+		
+		<union-subclass name="de.dis2016.model.House" table="haeuser">
+			<property name="floors" type="integer" column="stockwerke" />
+			<property name="price" type="integer" column="kaufpreis" />
+			<property name="garden" type="boolean" column="garten" />
+		</union-subclass>
+		
+		
+		<union-subclass name="de.dis2016.model.Apartment" table="apartments">
+			<property name="floor" type="integer" column="stockwerk" />
+			<property name="rent" type="integer" column="mietpreis" />
+			<property name="rooms" type="integer" column="zimmer" />
+			<property name="kitchen" type="boolean" column="kueche" />
+			<property name="balcony" type="boolean" column="balkon" />
+		</union-subclass>
+		
+		
+	</class>
+</hibernate-mapping>
