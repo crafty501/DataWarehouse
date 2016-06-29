@@ -31,7 +31,7 @@ import de.dis2016.model.Tenancy;
  * schrittweise die Datenverwaltung in die Datenbank auszulagern. Wenn die
  * Arbeit erledigt ist, werden alle Sets dieser Klasse überflüssig.
  */
-public class ImmoService implements IDB2 {
+public class ImmoService {
 	// Datensätze im Speicher
 
 	private SessionFactory sessionFactory;
@@ -40,12 +40,11 @@ public class ImmoService implements IDB2 {
 		sessionFactory = new Configuration().configure().buildSessionFactory();
 	}
 
-	@Override
 	public void addContract(Contract contract) {
 		addObjekt(contract);
 	}
 
-	@Override
+	
 	public List<Contract> getContracts() {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -54,17 +53,17 @@ public class ImmoService implements IDB2 {
 		return list;
 	}
 
-	@Override
+	
 	public void updateMakler(Makler makler) {
 		updateObject(makler);
 	}
 
-	@Override
+	
 	public void addMakler(Makler makler) {
 		this.addObjekt(makler);
 	}
 
-	@Override
+	
 	public List<Makler> getMarklers() {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -73,7 +72,7 @@ public class ImmoService implements IDB2 {
 		return list;
 	}
 
-	@Override
+	
 	public Makler getMakler(String login) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -81,7 +80,7 @@ public class ImmoService implements IDB2 {
 		return makler;
 	}
 
-	@Override
+	
 	public List<Estate> getEstates(String login) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -95,12 +94,12 @@ public class ImmoService implements IDB2 {
 		return estates;*/
 	}
 
-	@Override
+	
 	public List<Estate> getHouses(String login) {
 		return null;
 	}
 
-	@Override
+	
 	public List<Estate> getApartments(String login) {
 		return null;
 	}
@@ -160,24 +159,24 @@ public class ImmoService implements IDB2 {
 		session.getTransaction().commit();
 	}
 
-	@Override
+	
 	public void deleteEstate(Estate estate) {
 		deleteObject(estate);
 	}
 
-	@Override
+	
 	public void addApartment(Apartment apartment) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+	
 	public void addHouse(House house) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+	
 	public int addEstate(Estate estate) throws SQLException {
 		int contractNumber 	= estate.getContractnr();
 		int personID 		= estate.getPersonid();  
@@ -199,34 +198,34 @@ public class ImmoService implements IDB2 {
 		return 0;
 	}
 
-	@Override
+	
 	public void updateEstate(Estate estate) {
 		updateObject(estate);
 	}
 
-	@Override
+	
 	public void updateApartment(Apartment estate) throws SQLException {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+	
 	public void updateHouse(House estate) throws SQLException {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+	
 	public void addPerson(Person person) {
 		addObjekt(person);
 	}
 
-	@Override
+	
 	public void updatePerson(Person person) {
 		updateObject(person);
 	}
 
-	@Override
+	
 	public List<Person> getPersons() {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -235,7 +234,7 @@ public class ImmoService implements IDB2 {
 		return list;
 	}
 
-	@Override
+	
 	public Person getPerson(int id) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
