@@ -2,6 +2,7 @@ package de.dis2016.model;
 
 public class Shop{
 
+	private int id;
 	private String name;
 	private String stadt;
 	private String region;
@@ -9,6 +10,12 @@ public class Shop{
 	
 	public Shop() {}
 	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public String getName() {
 		return name;
 	}

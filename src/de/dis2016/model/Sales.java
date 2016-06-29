@@ -6,6 +6,17 @@ public class Sales{
 
 	private Artikel artikel;
 	private Shop shop;
+	private Date datum;
+	private int verkauft;
+	private double umsatz;
+	private int id;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 	public Sales() {}
 	
@@ -39,9 +50,6 @@ public class Sales{
 	public void setUmsatz(double umsatz) {
 		this.umsatz = umsatz;
 	}
-	private Date datum;
-	private int verkauft;
-	private double umsatz;
 			
 	
 	
