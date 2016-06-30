@@ -1,6 +1,8 @@
 package kolja.query;
 
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -8,7 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTable;
@@ -32,6 +36,7 @@ public class uitabelle extends JFrame{
 	int size;
 	int period;
 	SimpleDateFormat dateFormat;
+	JLabel label;
 	private void CreateTitel(){
 		
 		String Anfrage = "SELECT NAME FROM ARTIKEL";
@@ -138,8 +143,11 @@ public class uitabelle extends JFrame{
 			AnzahlRegion++;
 		}
 		System.out.println("size= "+size);
-		data = new String[(int) (maxdays*AnzahlRegion)][titel.length];
-		 res = mgr.SendQuery(Anfrage, true);
+		System.out.println("AnzahlRegion= "+AnzahlRegion);
+		
+		data = new String[(int) ((size)*AnzahlRegion)+100][titel.length];
+		
+		res = mgr.SendQuery(Anfrage, true);
 		while(res.next()){
 			
 			String startDate = "01.01.2015";
@@ -147,14 +155,11 @@ public class uitabelle extends JFrame{
 			for(int p = 0; p < maxdays ; p = p + period ){
 				
 				data[zeile][0]= Region; 
-				
 				Date date;
 				try {
 					date = dateFormat.parse(startDate);
-					//System.out.println("period"+period);
 					long time = date.getTime() + (long)(1000 * 60 * 60 * 24 * (long)period) ;
 					Date plusdays = new Date(time);
-					//System.out.println(plusdays.toString());
 					String endDate = dateFormat.format(plusdays);
 					if (update){
 						table.setValueAt(Region, zeile,0);
@@ -162,7 +167,7 @@ public class uitabelle extends JFrame{
 					}else{
 						data[zeile][1]=startDate + " - " + endDate;
 					}
-					System.out.println(startDate+"  -  "+endDate);
+					//System.out.println(startDate+"  -  "+endDate);
 					for (int i = 2 ; i < titel.length ; i++){
 						String Product = titel[i];
 						ResultSet r = MakeQuery(Region,Product,startDate,endDate);
@@ -196,9 +201,18 @@ public class uitabelle extends JFrame{
 	
 private void UpdateUI(){
 		
+	
+	
+	for(int i = 0 ; i < table.getRowCount() ; i++){
+		for(int j = 0 ; j < table.getColumnCount(); j++){
+		table.setValueAt("", i, j);
+		}
+	}
 	CreateTitel();
 	CreateData(true);
 	table.repaint();
+	
+	
 	}
 	
 	
@@ -219,6 +233,7 @@ public uitabelle(DB2ConnectionManager m){
 		
 		
 		
+		
 		slider = new JSlider();
 		slider.setMinimum(1);    				  //stellt den Minimalwert auf 0 ein
 		slider.setMaximum((int) this.GetDays());  //stellt den Maximalwert auf 150 ein
@@ -234,21 +249,42 @@ public uitabelle(DB2ConnectionManager m){
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				
-				
+				String S = String.valueOf(slider.getValue());
+				label.setText(S+" Tage");
+			}
+		});
+		
+		label = new JLabel();
+		String S = String.valueOf(slider.getValue());
+		label.setText(S+" Tage");
+		
+		add(label);
+		
+		
+		
+		add(slider);
+		
+		
+		
+		JButton pushbutton = new JButton();
+		pushbutton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
 				period = slider.getValue();
 				
-				size =(int)(maxdays / period);
+				size = (int)Math.round( (float)maxdays / (float)period);
+				
+				
 				System.out.println("Days:"+maxdays);
 				System.out.println("Size:"+size);
 				
 				UpdateUI();
 				
-				
 			}
 		});
-		add(slider);
-		
+		pushbutton.setText("OK");
+		add(pushbutton);
 		// Das JTable initialisieren
 		table = new JTable( data, titel);
 		
