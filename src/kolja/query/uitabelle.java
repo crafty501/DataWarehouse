@@ -147,7 +147,7 @@ public class uitabelle extends JFrame{
 			for(int p = 0; p < maxdays ; p = p + period ){
 				
 				data[zeile][0]= Region; 
-				System.out.println(Region);
+				
 				Date date;
 				try {
 					date = dateFormat.parse(startDate);
@@ -157,6 +157,7 @@ public class uitabelle extends JFrame{
 					//System.out.println(plusdays.toString());
 					String endDate = dateFormat.format(plusdays);
 					if (update){
+						table.setValueAt(Region, zeile,0);
 						table.setValueAt(startDate + " - " + endDate, zeile,1);
 					}else{
 						data[zeile][1]=startDate + " - " + endDate;
