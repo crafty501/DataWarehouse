@@ -37,6 +37,8 @@ public class uitabelle extends JFrame{
 	int period;
 	SimpleDateFormat dateFormat;
 	JLabel label;
+	String Anfrage1 = "SELECT REGION FROM SHOP GROUP BY REGION";
+	
 	private void CreateTitel(){
 		
 		String Anfrage = "SELECT NAME FROM ARTIKEL";
@@ -73,27 +75,7 @@ public class uitabelle extends JFrame{
 		
 	}
 	
-	private ResultSet MakeQuery(String Region,String Product,String StartDate ,String EndDate){
-		
-		String Anfrage = "SELECT sum(VERKAUFT) "
-				+ "FROM SHOP S, Artikel A, SALES SA "
-				+ "WHERE "
-				+ "A.NAME=SA.ARTIKEL "
-				+ "AND S.NAME=SA.SHOP "
-				+ "AND A.NAME='"+Product+"' "
-				+ "AND REGION='"+Region+"' "
-				+ "AND DATUM > '"+StartDate+"' "
-				+ "AND DATUM < '"+EndDate+"'";
-		//System.out.println(Anfrage);
-		try {
-			return mgr.SendQuery(Anfrage, true);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-				
-	}
+	
 	
 	private long GetDays(){
 		
@@ -134,8 +116,8 @@ public class uitabelle extends JFrame{
 		assert size > 0 : "Vorbedingung verletzt! size muss grösser null sein";
 			
 		try{	
-		String Anfrage = "SELECT REGION FROM SHOP GROUP BY REGION";	
-		ResultSet res = mgr.SendQuery(Anfrage, true);
+			
+		ResultSet res = mgr.SendQuery(Anfrage1, true);
 		int zeile = 0;
 		int AnzahlRegion = 0;
 		
@@ -144,16 +126,13 @@ public class uitabelle extends JFrame{
 		}
 		System.out.println("size= "+size);
 		System.out.println("AnzahlRegion= "+AnzahlRegion);
-		
 		data = new String[(int) ((size)*AnzahlRegion)+100][titel.length];
-		
-		res = mgr.SendQuery(Anfrage, true);
+		res = mgr.SendQuery(Anfrage1, true);
 		while(res.next()){
 			
 			String startDate = "01.01.2015";
 			String Region = res.getString(1);
 			for(int p = 0; p < maxdays ; p = p + period ){
-				
 				data[zeile][0]= Region; 
 				Date date;
 				try {
@@ -161,23 +140,18 @@ public class uitabelle extends JFrame{
 					long time = date.getTime() + (long)(1000 * 60 * 60 * 24 * (long)period) ;
 					Date plusdays = new Date(time);
 					String endDate = dateFormat.format(plusdays);
-					if (update){
-						table.setValueAt(Region, zeile,0);
-						table.setValueAt(startDate + " - " + endDate, zeile,1);
-					}else{
-						data[zeile][1]=startDate + " - " + endDate;
-					}
 					//System.out.println(startDate+"  -  "+endDate);
 					for (int i = 2 ; i < titel.length ; i++){
 						String Product = titel[i];
-						ResultSet r = MakeQuery(Region,Product,startDate,endDate);
-						r.next();
-						if(update){
-							table.setValueAt(r.getString(1), zeile, i);
-						}else{
-							data[zeile][i] = r.getString(1);
-						}
+						QueryThread t = new QueryThread();
+						t.SetParameter(mgr,Region,Product,startDate,endDate,zeile,i);
+						t.SetUIParam(table);
+						t.SetData(data);
+						t.SetUpdate(update);
+						t.start();
+						System.out.println("Thread erstellt");
 					}
+					
 				zeile++;
 				startDate = endDate;
 				} catch (ParseException e) {
@@ -185,11 +159,8 @@ public class uitabelle extends JFrame{
 					e.printStackTrace();
 				}
 				
-				
-				
-				
-				
 			}
+		
 		}
 		} catch (SQLException e) {
 		// TODO Auto-generated catch block
