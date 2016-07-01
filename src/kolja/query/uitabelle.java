@@ -124,16 +124,14 @@ public class uitabelle extends JFrame{
 		while (res.next()) {
 			AnzahlRegion++;
 		}
-		System.out.println("size= "+size);
-		System.out.println("AnzahlRegion= "+AnzahlRegion);
+		//System.out.println("size= "+size);
+		//System.out.println("AnzahlRegion= "+AnzahlRegion);
 		data = new String[(int) ((size)*AnzahlRegion)+100][titel.length];
 		res = mgr.SendQuery(Anfrage1, true);
 		while(res.next()){
-			
 			String startDate = "01.01.2015";
 			String Region = res.getString(1);
 			for(int p = 0; p < maxdays ; p = p + period ){
-				data[zeile][0]= Region; 
 				Date date;
 				try {
 					date = dateFormat.parse(startDate);
@@ -141,7 +139,7 @@ public class uitabelle extends JFrame{
 					Date plusdays = new Date(time);
 					String endDate = dateFormat.format(plusdays);
 					//System.out.println(startDate+"  -  "+endDate);
-					for (int i = 2 ; i < titel.length ; i++){
+					for (int i = 2 ; i < titel.length; i++){
 						String Product = titel[i];
 						QueryThread t = new QueryThread();
 						t.SetParameter(mgr,Region,Product,startDate,endDate,zeile,i);
@@ -149,11 +147,10 @@ public class uitabelle extends JFrame{
 						t.SetData(data);
 						t.SetUpdate(update);
 						t.start();
-						System.out.println("Thread erstellt");
 					}
 					
 				zeile++;
-				startDate = endDate;
+				startDate = endDate; // TODO: Plus einen Tag
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
