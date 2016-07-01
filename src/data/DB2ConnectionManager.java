@@ -9,7 +9,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 /**
@@ -29,7 +31,7 @@ public class DB2ConnectionManager {
 	/**
 	 * Erzeugt eine Datenbank-Verbindung
 	 */
-	protected DB2ConnectionManager() {
+	public DB2ConnectionManager() {
 		
 		try {
 			// Holen der Einstellungen aus der db2.properties Datei
@@ -82,6 +84,32 @@ public class DB2ConnectionManager {
 	 */
 	public Connection getConnection() {
 		return con;
+	}
+	
+
+
+	public ResultSet SendQuery(String S, boolean result) throws SQLException {
+
+		try {
+
+			Statement stm = this.con.createStatement();
+
+			if (result) {
+				if (stm.execute(S)) {
+					// return stm.getResultSet();
+					return stm.executeQuery(S);
+				} else {
+					return null;
+				}
+			} else {
+				stm.execute(S);
+				return null;
+			}
+
+		} catch (SQLException e) {
+			throw e;
+
+		}
 	}
 
 }
