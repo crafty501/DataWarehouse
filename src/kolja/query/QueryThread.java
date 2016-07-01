@@ -53,7 +53,8 @@ private ResultSet MakeQuery(String Region,String Product,String StartDate ,Strin
     }
     
 	public void SetParameter(DB2ConnectionManager _mgr,String _Region,String _Product, String _startDate,String _endDate,int _zeile, int _i){
-    	this.mgr 		= _mgr;
+    	//this.mgr 		= _mgr;
+    	 mgr = new DB2ConnectionManager();
 		this.Region 	= _Region;
     	this.Product 	= _Product;
     	this.startDate 	= _startDate;
