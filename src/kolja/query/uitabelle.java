@@ -38,7 +38,9 @@ public class uitabelle extends JFrame{
 	SimpleDateFormat dateFormat;
 	JLabel label;
 	String Anfrage1 = "SELECT REGION FROM SHOP GROUP BY REGION";
-	
+	String[] times_start;
+	String[] times_end;
+	int AnzahlRegion;
 	private void CreateTitel(){
 		
 		String Anfrage = "SELECT NAME FROM ARTIKEL";
@@ -110,17 +112,34 @@ public class uitabelle extends JFrame{
 		
 	}
 	
+	private void GenerateDates(){
+		String startDate = "01.01.2015";
+		String endDate = "";
+		times_start = new String[size+1];
+		times_end = new String[size+1];
+		int i = 0;
+		for(int p = 0; p < maxdays ; p = p + period ){
+			Date date;
+			try {
+				date = dateFormat.parse(startDate);
+				long time = date.getTime() + (86400000l * (long)period) ;
+				Date plusdays = new Date(time);
+				endDate = dateFormat.format(plusdays);
+				times_start[i] = startDate;
+				times_end[i] = endDate;
+				startDate = endDate;
+				i++;
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 	
-	private void CreateData(boolean update){
-		
-		assert size > 0 : "Vorbedingung verletzt! size muss grösser null sein";
-			
-		try{	
-			
+	private ResultSet gibRegionAnzahl(){
+		try{
 		ResultSet res = mgr.SendQuery(Anfrage1, true);
-		int zeile = 0;
-		int AnzahlRegion = 0;
-		
+		AnzahlRegion = 0;
 		while (res.next()) {
 			AnzahlRegion++;
 		}
@@ -128,41 +147,41 @@ public class uitabelle extends JFrame{
 		//System.out.println("AnzahlRegion= "+AnzahlRegion);
 		data = new String[(int) ((size)*AnzahlRegion)+100][titel.length];
 		res = mgr.SendQuery(Anfrage1, true);
+		return res;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private void CreateData(boolean update){
+		
+		assert size > 0 : "Vorbedingung verletzt! size muss grösser null sein";
+		ResultSet res = this.gibRegionAnzahl();
+		GenerateDates();
+		int zeile = 0;
+		try{
 		while(res.next()){
-			String startDate = "01.01.2015";
 			String Region = res.getString(1);
-			for(int p = 0; p < maxdays ; p = p + period ){
-				Date date;
-				try {
-					date = dateFormat.parse(startDate);
-					long time = date.getTime() + (long)(1000 * 60 * 60 * 24 * (long)period) ;
-					Date plusdays = new Date(time);
-					String endDate = dateFormat.format(plusdays);
-					//System.out.println(startDate+"  -  "+endDate);
-					for (int i = 2 ; i < titel.length; i++){
+			int c = 0;
+			for(int p = 0; p < maxdays ; p = p + period ){		
+					for ( int i = 2 ; i < titel.length; i++){
 						String Product = titel[i];
 						QueryThread t = new QueryThread();
-						t.SetParameter(mgr,Region,Product,startDate,endDate,zeile,i);
+						t.SetParameter(mgr,Region,Product,times_start[c],times_end[c],zeile,i);
 						t.SetUIParam(table);
 						t.SetData(data);
 						t.SetUpdate(update);
 						t.start();
 					}
-					
+					c++;
 				zeile++;
-				startDate = endDate; // TODO: Plus einen Tag
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
 			}
+		}}catch(SQLException e ){
+			System.out.println(e.getMessage());
+		}
 		
-		}
-		} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-		}
 }
 
 	
@@ -258,7 +277,7 @@ public uitabelle(DB2ConnectionManager m){
 		
 		add(new JScrollPane(table));
 		this.setSize(800, 600);
-		
+		mgr = new DB2ConnectionManager();
 	}
 	
 	
