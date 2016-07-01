@@ -3,6 +3,7 @@ package kolja.query;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.JProgressBar;
 import javax.swing.JTable;
 
 import data.DB2ConnectionManager;
@@ -16,6 +17,7 @@ public class QueryThread extends Thread{
     JTable table;
     String[][] data;
     DB2ConnectionManager mgr;
+    JProgressBar progressBar;
     
 private ResultSet MakeQuery(String Region,String Product,String StartDate ,String EndDate){
 		
@@ -51,7 +53,9 @@ private ResultSet MakeQuery(String Region,String Product,String StartDate ,Strin
     public void SetUIParam(JTable _tabelle){	
     	this.table = _tabelle;
     }
-    
+    public void setProgressBar(JProgressBar _progressBar){
+    	this.progressBar = _progressBar;
+    }
 	public void SetParameter(DB2ConnectionManager _mgr,String _Region,String _Product, String _startDate,String _endDate,int _zeile, int _i){
     	this.mgr 		= _mgr;
     	 //mgr = new DB2ConnectionManager();
@@ -88,6 +92,6 @@ private ResultSet MakeQuery(String Region,String Product,String StartDate ,Strin
 			e.printStackTrace();
 		}
 		
-		
+		progressBar.setValue(progressBar.getValue() +1 );
 	}
 }

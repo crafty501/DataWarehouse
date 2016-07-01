@@ -1,5 +1,6 @@
 package kolja.query;
 
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,12 +11,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -32,6 +37,7 @@ public class uitabelle extends JFrame{
 	DB2ConnectionManager mgr;
 	JSlider slider;
 	JTable table;
+	JProgressBar progressBar;
 	long maxdays;
 	int size;
 	int period;
@@ -41,6 +47,7 @@ public class uitabelle extends JFrame{
 	String[] times_start;
 	String[] times_end;
 	int AnzahlRegion;
+	int progress ;
 	private void CreateTitel(){
 		
 		String Anfrage = "SELECT NAME FROM ARTIKEL";
@@ -115,8 +122,9 @@ public class uitabelle extends JFrame{
 	private void GenerateDates(){
 		String startDate = "01.01.2015";
 		String endDate = "";
-		times_start = new String[size+1];
-		times_end = new String[size+1];
+		int size = (int)(maxdays / period);
+		times_start = new String[size + 1 ];
+		times_end = new String[size + 1];
 		int i = 0;
 		for(int p = 0; p < maxdays ; p = p + period ){
 			Date date;
@@ -143,9 +151,11 @@ public class uitabelle extends JFrame{
 		while (res.next()) {
 			AnzahlRegion++;
 		}
-		//System.out.println("size= "+size);
-		//System.out.println("AnzahlRegion= "+AnzahlRegion);
-		data = new String[(int) ((size)*AnzahlRegion)+100][titel.length];
+		int size = (int)((float)maxdays / (float)period);
+		if(maxdays % period > 0 ){
+			size++;
+		}
+		data = new String[(int) maxdays][titel.length];
 		res = mgr.SendQuery(Anfrage1, true);
 		return res;
 		} catch (SQLException e) {
@@ -158,6 +168,9 @@ public class uitabelle extends JFrame{
 	private void CreateData(boolean update){
 		
 		assert size > 0 : "Vorbedingung verletzt! size muss grösser null sein";
+		
+		
+		data = new String[(int) (maxdays)][titel.length];
 		ResultSet res = this.gibRegionAnzahl();
 		GenerateDates();
 		int zeile = 0;
@@ -173,7 +186,9 @@ public class uitabelle extends JFrame{
 						t.SetUIParam(table);
 						t.SetData(data);
 						t.SetUpdate(update);
+						t.setProgressBar(progressBar);
 						t.start();
+						
 					}
 					c++;
 				zeile++;
@@ -197,7 +212,6 @@ private void UpdateUI(){
 	}
 	CreateTitel();
 	CreateData(true);
-	table.repaint();
 	
 	
 	}
@@ -212,11 +226,20 @@ public uitabelle(DB2ConnectionManager m){
 		maxdays = this.GetDays();
 		size =(int)(maxdays / 149);
 		period = 149;
+		
 		CreateTitel();
+		
+		this.setLayout(new BorderLayout());
+		
+		progressBar = new JProgressBar();
+		progressBar.setMinimum(0);
+        progressBar.setMaximum(titel.length * size);
+		progressBar.setValue(0);
+		progressBar.setStringPainted(true);
+		this.add(progressBar,BorderLayout.SOUTH);
+		
+		
 		CreateData(false);
-		
-		
-		this.setLayout(new FlowLayout());
 		
 		
 		
@@ -245,37 +268,51 @@ public uitabelle(DB2ConnectionManager m){
 		String S = String.valueOf(slider.getValue());
 		label.setText(S+" Tage");
 		
-		add(label);
-		
-		
-		
-		add(slider);
-		
-		
 		
 		JButton pushbutton = new JButton();
 		pushbutton.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				period = slider.getValue();
-				
-				size = (int)Math.round( (float)maxdays / (float)period);
 				
 				
-				System.out.println("Days:"+maxdays);
-				System.out.println("Size:"+size);
-				
-				UpdateUI();
+				Thread t = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						period = slider.getValue();
+						
+						
+						
+						int size = (int)((float)maxdays / (float)period);
+						if(maxdays % period > 0 ){
+							size++;
+						}
+						
+						progressBar.setValue(0);
+						progressBar.setMaximum(size*AnzahlRegion*(titel.length -2));
+						UpdateUI();
+					}
+				});
+				t.start();
 				
 			}
 		});
 		pushbutton.setText("OK");
-		add(pushbutton);
+		
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.add(label);
+		panel.add(slider);
+		panel.add(pushbutton);
+		add(panel,BorderLayout.WEST);
+		
+		
+		
+		
 		// Das JTable initialisieren
 		table = new JTable( data, titel);
 		
-		add(new JScrollPane(table));
+		add(new JScrollPane(table),BorderLayout.CENTER);
 		this.setSize(800, 600);
 		mgr = new DB2ConnectionManager();
 	}
