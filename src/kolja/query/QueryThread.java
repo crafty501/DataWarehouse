@@ -22,12 +22,12 @@ private ResultSet MakeQuery(String Region,String Product,String StartDate ,Strin
 		String Anfrage = "SELECT sum(VERKAUFT) "
 				+ "FROM SHOP S, Artikel A, SALES SA "
 				+ "WHERE "
-				+ "A.NAME=SA.ARTIKEL "
-				+ "AND S.NAME=SA.SHOP "
-				+ "AND A.NAME='"+Product+"' "
+				+ "A.NAME='"+Product+"' "
 				+ "AND REGION='"+Region+"' "
 				+ "AND DATUM > '"+StartDate+"' "
-				+ "AND DATUM < '"+EndDate+"'";
+				+ "AND DATUM < '"+EndDate+"'"
+				+ "AND A.NAME=SA.ARTIKEL "
+				+ "AND S.NAME=SA.SHOP ";
 		//System.out.println(Anfrage);
 		try {
 			return mgr.SendQuery(Anfrage, true);
@@ -71,6 +71,7 @@ private ResultSet MakeQuery(String Region,String Product,String StartDate ,Strin
 				table.setValueAt(Region, zeile,0);
 				table.setValueAt(startDate + " - " + endDate, zeile,1);
 			}else{
+				data[zeile][0]= Region; 
 				data[zeile][1]=startDate + " - " + endDate;
 			}
 			ResultSet r = MakeQuery(Region,Product,startDate,endDate);
