@@ -5,7 +5,7 @@ import data.DB2ConnectionManager;
 import data.DBService;
 import kolja.query.uitabelle;
 
-public class startup {
+public class Main {
 	
 	
 	public static void main(String[] args) throws ParseException {
