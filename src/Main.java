@@ -22,6 +22,6 @@ public class Main {
 		DB2ConnectionManager mgr = new DB2ConnectionManager();
 		uitabelle ui = new uitabelle(mgr);
 		ui.setVisible(true);
-		System.out.println("sss");
+		System.out.println("ui gestartet");
 	}
 }
