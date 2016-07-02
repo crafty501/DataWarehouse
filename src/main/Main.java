@@ -1,8 +1,7 @@
+package main;
 import java.text.ParseException;
 
-import data.CSV;
 import data.DB2ConnectionManager;
-import data.DBService;
 import kolja.query.uitabelle;
 
 public class Main {
