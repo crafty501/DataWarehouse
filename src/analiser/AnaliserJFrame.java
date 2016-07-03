@@ -46,7 +46,6 @@ public class AnaliserJFrame extends JFrame {
 	JComboBox timeCombo;
 
 	JPanel dimpanel;
-	AnaliserJFrame that;
 	JButton click_mich;
 	JTable table;
 
