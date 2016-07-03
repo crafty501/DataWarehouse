@@ -88,27 +88,22 @@ public class DB2ConnectionManager {
 	
 
 
-	public ResultSet SendQuery(String S, boolean result) throws SQLException {
+	public ResultSet sendQuery(String query, boolean result) throws SQLException {
 
 		try {
-
 			Statement stm = this.con.createStatement();
-
 			if (result) {
-				if (stm.execute(S)) {
-					// return stm.getResultSet();
-					return stm.executeQuery(S);
+				if (stm.execute(query)) {
+					return stm.executeQuery(query);
 				} else {
 					return null;
 				}
 			} else {
-				stm.execute(S);
+				stm.execute(query);
 				return null;
 			}
-
 		} catch (SQLException e) {
 			throw e;
-
 		}
 	}
 

@@ -32,7 +32,7 @@ private ResultSet MakeQuery(String Region,String Product,String StartDate ,Strin
 				+ "AND S.NAME=SA.SHOP ";
 		//System.out.println(Anfrage);
 		try {
-			return mgr.SendQuery(Anfrage, true);
+			return mgr.sendQuery(Anfrage, true);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

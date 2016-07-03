@@ -1,7 +1,9 @@
 package main;
 import java.text.ParseException;
 
+import analiser.AnaliserJFrame;
 import data.DB2ConnectionManager;
+import data.WarehouseService;
 import kolja.query.uitabelle;
 
 public class Main {
@@ -9,18 +11,14 @@ public class Main {
 	
 	public static void main(String[] args) throws ParseException {
 		
-		/*
-		DBService dbService = new DBService();
-		dbService.createShop();
-		dbService.createArtikel();
-		CSV csv = new CSV();
-		csv.readFile();
-		*/
-		
-		
 		DB2ConnectionManager mgr = new DB2ConnectionManager();
-		uitabelle ui = new uitabelle(mgr);
-		ui.setVisible(true);
-		System.out.println("ui gestartet");
+		
+		//new WarehouseService(mgr);
+		
+		
+		//Uitabelle ui = new Uitabelle(mgr);
+		//ui.setVisible(true);
+		//System.out.println("ui gestartet");
+		new AnaliserJFrame(mgr);
 	}
 }

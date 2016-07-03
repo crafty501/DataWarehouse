@@ -55,7 +55,7 @@ public class uitabelle extends JFrame{
 		try {
 			ArrayList<String> titelliste = new ArrayList<String>();
 			
-			res = mgr.SendQuery(Anfrage, true);
+			res = mgr.sendQuery(Anfrage, true);
 			while (res.next()){
 				String S = res.getString(1);
 				System.out.println(S);
@@ -90,11 +90,11 @@ public class uitabelle extends JFrame{
 		
 		try{
 			String Anfrage = "SELECT DATUM FROM SALES ORDER BY DATUM ASC";
-			ResultSet r = mgr.SendQuery(Anfrage, true);
+			ResultSet r = mgr.sendQuery(Anfrage, true);
 			r.next();
 			String startdate = r.getString(1);
 			Anfrage = "SELECT DATUM FROM SALES ORDER BY DATUM DESC";
-			r = mgr.SendQuery(Anfrage, true);
+			r = mgr.sendQuery(Anfrage, true);
 			r.next();
 			String enddate = r.getString(1);
 			
@@ -146,7 +146,7 @@ public class uitabelle extends JFrame{
 	
 	private ResultSet gibRegionAnzahl(){
 		try{
-		ResultSet res = mgr.SendQuery(Anfrage1, true);
+		ResultSet res = mgr.sendQuery(Anfrage1, true);
 		AnzahlRegion = 0;
 		while (res.next()) {
 			AnzahlRegion++;
@@ -156,7 +156,7 @@ public class uitabelle extends JFrame{
 			size++;
 		}
 		data = new String[(int) maxdays][titel.length];
-		res = mgr.SendQuery(Anfrage1, true);
+		res = mgr.sendQuery(Anfrage1, true);
 		return res;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
