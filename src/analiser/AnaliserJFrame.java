@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -27,23 +29,16 @@ public class AnaliserJFrame extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	// String query = "select DECODE(art.name, 1, art.name) AS alias"
-	// + " from sales as sale"
-	// + " join shop as shop"
-	// + " on sale.shop = shop.name"
-	// + " join artikel as art"
-	// + " on sale.artikel = art.name";
-	String query = "select art.name " + "from Artikel as art";
-
-	// String query = "select sale.artikel,art.preis, art.gruppe, art.familie,
-	// art.kategorie ,sale.shop, sale.datum, sale.verkauft, sale.umsatz"
-	// + " from sales as sale"
-	// + " join shop as shop"
-	// + " on sale.shop = shop.name"
-	// + " join artikel as art"
-	// + " on sale.artikel = art.name";
-
+	
 	DB2ConnectionManager mgr;
+	
+	private String artikelDimension;
+	private String shopDimension;
+	private String timeDimension;
+	
+	JComboBox artikelCombo;
+	JComboBox shopCombo;
+	JComboBox timeCombo;
 
 	private enum ArtikelDimension {
 		name, familie, gruppe, kategorie
@@ -59,42 +54,52 @@ public class AnaliserJFrame extends JFrame {
 
 	public AnaliserJFrame(DB2ConnectionManager mgr) {
 		this.mgr = mgr;
+		
+		artikelDimension = ArtikelDimension.name.name();
+		shopDimension = ShopDimension.stadt.name();
+		timeDimension = TimeDimension.QUARTER.name();
+		
+		artikelCombo = new JComboBox(ArtikelDimension.values());
+		shopCombo = new JComboBox(ShopDimension.values());
+		timeCombo = new JComboBox(TimeDimension.values());
+		
+		
 		this.setLayout(new FlowLayout());
 		JButton start = new JButton("start");
 		this.add(start);
-
-		String artikelDimension = ArtikelDimension.name.name();
-		String shopDimension = ShopDimension.stadt.name();
-		String timeDimension = TimeDimension.QUARTER.name();
-
-		ArrayList<String> artikelNames = getArtikelDimensionNames(artikelDimension);
-		String decode = generateDecodeStringNametoVerkauft(artikelNames, artikelDimension);
-
-		String query = "select shop." + shopDimension + "," + timeDimension + "(sale.datum) as " + timeDimension + ""
-				+ decode + " from sales as sale" + " join shop as shop" + " on sale.shop = shop.name"
-				+ " join artikel as art" + " on sale.artikel = art.name" + " group by rollup (shop." + shopDimension
-				+ ", " + timeDimension + "(sale.datum))" + " order by shop." + shopDimension + ", " + timeDimension
-				+ "(sale.datum)";
-
+		
+		
+		artikelCombo.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				artikelDimension = artikelCombo.getSelectedItem().toString();
+			}
+		});
+		
+		shopCombo.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				shopDimension = shopCombo.getSelectedItem().toString();
+			}
+		});
+		
+		timeCombo.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				timeDimension = timeCombo.getSelectedItem().toString();
+			}
+		});
+		
+		
+		
 		start.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ResultSet rs;
-				try {
-					System.out.println("query request");
-					rs = mgr.sendQuery(query, true);
-					System.out.println("query output");
-					JTable table = new JTable(buildTableModel(rs));
-					table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
-					JScrollPane jScrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-							JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-					UIManager.put("OptionPane.minimumSize", new Dimension(1024, 768));
-					JOptionPane.showMessageDialog(getFocusOwner(), jScrollPane);
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
+				showTable();
 			}
 		});
 
@@ -112,6 +117,45 @@ public class AnaliserJFrame extends JFrame {
 			decode = decode + qurey;
 		}
 		return decode;
+	}
+	
+	
+	private void showTable() {
+		
+		ArrayList<String> artikelNames = getArtikelDimensionNames(artikelDimension);
+		String decode = generateDecodeStringNametoVerkauft(artikelNames, artikelDimension);
+
+		
+		String query = "select shop." + shopDimension + "," + timeDimension + "(sale.datum) as " + timeDimension + ""
+				+ decode + " from sales as sale" + " join shop as shop" + " on sale.shop = shop.name"
+				+ " join artikel as art" + " on sale.artikel = art.name" + " group by rollup (shop." + shopDimension
+				+ ", " + timeDimension + "(sale.datum))" + " order by shop." + shopDimension + ", " + timeDimension
+				+ "(sale.datum)";
+		
+		
+		ResultSet rs;
+		try {
+			System.out.println("query request");
+			rs = mgr.sendQuery(query, true);
+			System.out.println("query output");
+			JPanel p = new JPanel();
+			JTable table = new JTable(buildTableModel(rs));
+			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+			JScrollPane jScrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+					JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			UIManager.put("OptionPane.minimumSize", new Dimension(1024, 600));
+			
+			p.add(artikelCombo);
+			p.add(shopCombo);
+			p.add(timeCombo);
+			p.add(jScrollPane);
+			
+			JOptionPane.showMessageDialog(getFocusOwner(), p);
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	
 	}
 
 	private ArrayList<String> getArtikelDimensionNames(String artikelDim) {
