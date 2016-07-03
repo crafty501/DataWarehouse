@@ -48,9 +48,9 @@ public class AnaliserJFrame extends JFrame {
 	JPanel dimpanel;
 	AnaliserJFrame that;
 	JButton click_mich;
-	static JTable table;
+	JTable table;
 
-	static JProgressBar progressBar;
+	JProgressBar progressBar;
 	
 	private enum ArtikelDimension {
 		name, familie, gruppe, kategorie
@@ -65,7 +65,6 @@ public class AnaliserJFrame extends JFrame {
 	}
 
 	public AnaliserJFrame(DB2ConnectionManager mgr) {
-		that = this;
 		this.mgr = mgr;
 		
 		artikelDimension = ArtikelDimension.name.name();
@@ -278,7 +277,7 @@ public class AnaliserJFrame extends JFrame {
 		return new DefaultTableModel(data, columnNames);
 	}
 	
-	private static void updateTable(ResultSet rs) throws SQLException {
+	private  void updateTable(ResultSet rs) throws SQLException {
 
 		
 		
@@ -314,14 +313,13 @@ public class AnaliserJFrame extends JFrame {
 		int z = data.size() * data.get(1).size();
 		progressBar.setMaximum(z);
 		
-		
 		for(int i = 0 ; i < data.size(); i ++){
 			
 			for(int j = 0 ; j < data.get(i).size(); j++){
 				Object o = data.get(i).get(j);
 				String value = "";
 				if(o != null){
-					value = data.get(i).get(j).toString();
+					value = o.toString();
 				}else{
 					value = "SUMME";
 				}
