@@ -15,10 +15,8 @@ public class Main {
 		
 		//new WarehouseService(mgr);
 		
-		
-		//Uitabelle ui = new Uitabelle(mgr);
+		//uitabelle ui = new uitabelle(mgr);
 		//ui.setVisible(true);
-		//System.out.println("ui gestartet");
 		new AnaliserJFrame(mgr);
 	}
 }
