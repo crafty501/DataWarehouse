@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -26,28 +27,55 @@ public class AnaliserJFrame extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 
-
+	
+	
 //	String query = "select DECODE(art.name, 1, art.name) AS alias"
 //	+ " from sales as sale"
 //	+ " join shop as shop"
 //	+ " on sale.shop = shop.name"
 //	+ " join artikel as art"
 //	+ " on sale.artikel = art.name";
-
+	String query = "select art.name "
+			+ "from Artikel as art";
 	
-	String query = "select sale.artikel,art.preis, art.gruppe, art.familie, art.kategorie ,sale.shop, sale.datum, sale.verkauft, sale.umsatz"
-			+ " from sales as sale"
-			+ " join shop as shop"
-			+ " on sale.shop = shop.name"
-			+ " join artikel as art"
-			+ " on sale.artikel = art.name";
+//	String query = "select sale.artikel,art.preis, art.gruppe, art.familie, art.kategorie ,sale.shop, sale.datum, sale.verkauft, sale.umsatz"
+//			+ " from sales as sale"
+//			+ " join shop as shop"
+//			+ " on sale.shop = shop.name"
+//			+ " join artikel as art"
+//			+ " on sale.artikel = art.name";
 	
+	DB2ConnectionManager mgr;
 	
 	public AnaliserJFrame(DB2ConnectionManager mgr) {
-		
+		this.mgr = mgr;
 		this.setLayout(new FlowLayout());
 		JButton start = new JButton("start");
 		this.add(start);
+		
+		
+		ArrayList<String> artikelNames = getArtikelNames();
+		String decode = generateDecodeStringNametoVerkauft(artikelNames);
+		String query = "select shop.stadt,sale.datum"+decode
+				+ " from sales as sale"
+				+ " join shop as shop"
+				+ " on sale.shop = shop.name"
+				+ " join artikel as art"
+				+ " on sale.artikel = art.name"
+				+ " group by shop.stadt, sale.datum"
+				+ " order by shop.stadt asc";
+				
+				
+		
+		System.out.println(decode);
+		
+//		String queryx = "select shop.stadt, sale.datum, MAX(DECODE(art.name, 'LG RH-T 298',sale.verkauft)) AS \"test test\""
+//				+ " from sales as sale"
+//				+ " join shop as shop"
+//				+ " on sale.shop = shop.name"
+//				+ " join artikel as art"
+//				+ " on sale.artikel = art.name"
+//				+ " group py shop.stadt";
 		
 		start.addActionListener(new ActionListener() {
 			
@@ -73,9 +101,38 @@ public class AnaliserJFrame extends JFrame{
 		
 		this.setSize(800, 600);
 		this.setVisible(true);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
+private String generateDecodeStringNametoVerkauft(ArrayList<String> artikelNames) {
+	String decode = "";
+	for (String name : artikelNames) {
+		String qurey = ",MAX(DECODE(art.name,'"+name+"',sale.verkauft)) as \""+name+"\"";
+		decode = decode + qurey;
+	}
+	return decode;
+}
 	
+	
+private ArrayList<String> getArtikelNames(){
+		String getArikelNames = "select name from artikel";
+		ResultSet rs;
+		ArrayList<String> artikelNames = new ArrayList<String>();
+		try {
+			
+			rs = mgr.sendQuery(getArikelNames, true);
+			while (rs.next()){
+				String name = rs.getString(1);
+				System.out.println(name);
+				artikelNames.add(name);
+				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return artikelNames;
+	}
 	
 	
 	
