@@ -62,8 +62,8 @@ public class AnaliserJFrame extends JFrame{
 				+ " on sale.shop = shop.name"
 				+ " join artikel as art"
 				+ " on sale.artikel = art.name"
-				+ " group by shop.stadt, sale.datum"
-				+ " order by shop.stadt asc";
+				+ " group by rollup (shop.stadt, sale.datum)"
+				+ " order by shop.stadt, sale.datum";
 				
 				
 		
@@ -107,7 +107,7 @@ public class AnaliserJFrame extends JFrame{
 private String generateDecodeStringNametoVerkauft(ArrayList<String> artikelNames) {
 	String decode = "";
 	for (String name : artikelNames) {
-		String qurey = ",MAX(DECODE(art.name,'"+name+"',sale.verkauft)) as \""+name+"\"";
+		String qurey = ",SUM(DECODE(art.name,'"+name+"',sale.verkauft)) as \""+name+"\"";
 		decode = decode + qurey;
 	}
 	return decode;
