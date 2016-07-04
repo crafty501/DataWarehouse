@@ -43,7 +43,7 @@ public class WarehouseService{
 	public WarehouseService(DB2ConnectionManager mgr) throws ParseException{
 		sessionFactory = new Configuration().configure().buildSessionFactory();
 		
-		this.mgr = mgr;
+		this.mgr = new DB2ConnectionManager();;
 		dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 		numberFormat = NumberFormat.getInstance(Locale.FRANCE);
 		System.out.println("before factory");
