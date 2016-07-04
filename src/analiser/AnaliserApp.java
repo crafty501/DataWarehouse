@@ -226,8 +226,13 @@ public class AnaliserApp extends Application {
             TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i+1));
             
             col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){                    
-                public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {                                                                                              
-                    return new SimpleStringProperty(param.getValue().get(j).toString());                        
+                
+            	public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {                                                                                              
+
+            		if(param.getValue().get(j) != null) {
+                		return new SimpleStringProperty(param.getValue().get(j).toString());                        
+                	}
+                	return null;
                 }                    
             });
             
@@ -238,16 +243,27 @@ public class AnaliserApp extends Application {
         /********************************
          * Data added to ObservableList *
          ********************************/
+		String last = "";
         while(rs.next()){
             //Iterate Row
+        	
             ObservableList<String> row = FXCollections.observableArrayList();
             for(int i=1 ; i<=rs.getMetaData().getColumnCount(); i++){
-            	String value = rs.getString(i);
-            	if (value == null) {
-            		value="";
+            	
+            	if (i == 1) {
+            		System.out.println(last);
+            		if (last.equals(rs.getString(i))) {
+            			row.add(null);
+            			continue;
+            		}
+            		last = rs.getString(i);
             	}
-            	row.add(value);
+            	
+            	row.add(rs.getString(i));
             }
+            
+            
+            
             data.add(row);
         }
         
