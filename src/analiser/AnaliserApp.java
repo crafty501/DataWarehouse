@@ -251,7 +251,6 @@ public class AnaliserApp extends Application {
             for(int i=1 ; i<=rs.getMetaData().getColumnCount(); i++){
             	
             	if (i == 1) {
-            		System.out.println(last);
             		if (last.equals(rs.getString(i))) {
             			row.add(null);
             			continue;
