@@ -95,6 +95,7 @@ public class AnaliserJFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				timeDimension = timeCombo.getSelectedItem().toString();
+				
 			}
 		});
 		
@@ -291,11 +292,11 @@ public class AnaliserJFrame extends JFrame {
 		
 		ResultSetMetaData metaData = rs.getMetaData();
 		// names of columns
-		Vector<String> columnNames = new Vector<String>();
 		int columnCount = metaData.getColumnCount();
-		for (int column = 1; column <= columnCount; column++) {
-			columnNames.add(metaData.getColumnName(column));
-		}
+		table.getColumnModel().getColumn(0).setHeaderValue(shopDimension);
+		table.getColumnModel().getColumn(1).setHeaderValue(timeDimension);
+		
+		
 
 		// data of the table
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
@@ -327,7 +328,8 @@ public class AnaliserJFrame extends JFrame {
 			}
 		}
 
-		
+		table.repaint();
+		table.getTableHeader().repaint();
 	}
 
 	// String query2 = "select shop.stadt,sale.datum"+decode
