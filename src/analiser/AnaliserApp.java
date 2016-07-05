@@ -1,26 +1,13 @@
 package analiser;
 
-import java.awt.Dimension;
-
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Vector;
-
-import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.UIManager;
-import javax.swing.table.DefaultTableModel;
 
 import data.DB2ConnectionManager;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,38 +16,28 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class AnaliserApp extends Application {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	
 	DB2ConnectionManager mgr;
 	
-	private String artikelDimension;
-	private String shopDimension;
-	private String timeDimension;
 	
-	ComboBox artikelCombo;
-	ComboBox shopCombo;
-	ComboBox timeCombo;
+	ComboBox<ArtikelDimension> artikelCombo;
+	ComboBox<ShopDimension> shopCombo;
+	ComboBox<TimeDimension> timeCombo;
 
 	private enum ArtikelDimension {
-		name, familie, gruppe, kategorie
+		name, gruppe,familie, kategorie
 	}
 
 	private enum ShopDimension {
@@ -85,58 +62,77 @@ public class AnaliserApp extends Application {
 		
 		this.mgr = new DB2ConnectionManager();
 		
-		artikelDimension = ArtikelDimension.name.name();
-		shopDimension = ShopDimension.stadt.name();
-		timeDimension = TimeDimension.QUARTER.name();
-		
-		artikelCombo = new ComboBox(FXCollections.observableArrayList(ArtikelDimension.values()));
-		shopCombo = new ComboBox(FXCollections.observableArrayList(ShopDimension.values()));
-		timeCombo = new ComboBox(FXCollections.observableArrayList(TimeDimension.values()));
+//		artikelDimension = ArtikelDimension.name.name();
+//		shopDimension = ShopDimension.stadt.name();
+//		timeDimension = TimeDimension.QUARTER.name();
 		
 		
-		
-		StackPane root = new StackPane();
+		//StackPane root = new StackPane();
+		VBox root = new VBox(5);
+		primaryStage.setScene(new Scene(root, 800, 600));
         
-        primaryStage.setScene(new Scene(root, 300, 250));
-        primaryStage.show();
         
-		
-        Button start = new Button("start");
         
-		root.getChildren().add(start);
-		
-		artikelCombo.valueProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				artikelDimension = newValue;
-			}
-		});
+		Button start = new Button("update");
+        TableView<ObservableList<String>> tableview = new TableView<>();
+        artikelCombo = new ComboBox<>(FXCollections.observableArrayList(ArtikelDimension.values()));
+        shopCombo = new ComboBox<>(FXCollections.observableArrayList(ShopDimension.values()));
+        timeCombo = new ComboBox<>(FXCollections.observableArrayList(TimeDimension.values()));
+        
+        
+        artikelCombo.setPrefWidth(100);
+        shopCombo.setPrefWidth(100);
+        timeCombo.setPrefWidth(100);
+        
+        artikelCombo.setValue(ArtikelDimension.name);
+        shopCombo.setValue(ShopDimension.stadt);
+        timeCombo.setValue(TimeDimension.QUARTER);
 
+        
+        VBox.setVgrow(tableview, Priority.ALWAYS);
+        
+        root.getChildren().add(tableview);
+
+        root.getChildren().add(new HBox(artikelCombo, new Label(" : Artikel Dimension")));
+        root.getChildren().add(new HBox(shopCombo, new Label(" : Shop Dimension")));
+        root.getChildren().add(new HBox(timeCombo, new Label(" : Zeit Dimension")));
+        root.getChildren().add(start);
+        
+		primaryStage.show();
 		
-		shopCombo.valueProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				shopDimension = newValue;
-			}
-		});
-		
-		
-		timeCombo.valueProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				timeDimension = newValue;
-			}
-		});
-		
+//		artikelCombo.valueProperty().addListener(new ChangeListener<ArtikelDimension>() {
+//			@Override
+//			public void changed(ObservableValue<? extends ArtikelDimension> observable, ArtikelDimension oldValue, ArtikelDimension newValue) {
+//				artikelDimension = newValue.name();
+//			}
+//		});
+//		
+//
+//		shopCombo.valueProperty().addListener(new ChangeListener<ShopDimension>() {
+//			@Override
+//			public void changed(ObservableValue<? extends ShopDimension> observable, ShopDimension oldValue, ShopDimension newValue) {
+//				shopDimension = newValue.name();
+//			}
+//		});
+//		
+//		
+//		timeCombo.valueProperty().addListener(new ChangeListener<TimeDimension>() {
+//			@Override
+//			public void changed(ObservableValue<? extends TimeDimension> observable, TimeDimension oldValue, TimeDimension newValue) {
+//				timeDimension = newValue.name();
+//			}
+//		});
 		
 
 		start.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent event) {
-				showTable();
+				updateTable(tableview);
 			}
 		});
+		
+		
 		
 	}
 
@@ -152,7 +148,11 @@ public class AnaliserApp extends Application {
 	}
 	
 	
-	private void showTable() {
+	private void updateTable(TableView<ObservableList<String>> tableview) {
+		
+		String artikelDimension = artikelCombo.getValue().name();
+		String shopDimension = shopCombo.getValue().name();
+		String timeDimension = timeCombo.getValue().name();
 		
 		ArrayList<String> artikelNames = getArtikelDimensionNames(artikelDimension);
 		String decode = generateDecodeStringNametoVerkauft(artikelNames, artikelDimension);
@@ -164,35 +164,18 @@ public class AnaliserApp extends Application {
 				+ ", " + timeDimension + "(sale.datum))" + " order by shop." + shopDimension + ", " + timeDimension
 				+ "(sale.datum)";
 		
-		
 		ResultSet rs;
+		
 		try {
 			rs = mgr.sendQuery(query, true);
 		
-			
-			TableView tableview = new TableView<>();
 			insertTableData(rs, tableview);
 			
-			
-			
-			
-			final Stage dialog = new Stage();
-            dialog.initModality(Modality.APPLICATION_MODAL);
-            dialog.initOwner(primaryStage);
-            VBox dialogVbox = new VBox(3);
-            dialogVbox.getChildren().add(tableview);
-            
-            dialogVbox.getChildren().add(artikelCombo);
-            dialogVbox.getChildren().add(timeCombo);
-            dialogVbox.getChildren().add(shopCombo);
-            Scene dialogScene = new Scene(dialogVbox, 300, 200);
-            dialog.setScene(dialogScene);
-            dialog.show();
+			rs.close();
 			
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-	
 	}
 
 	private ArrayList<String> getArtikelDimensionNames(String artikelDim) {
@@ -217,17 +200,20 @@ public class AnaliserApp extends Application {
 
 	private void insertTableData(ResultSet rs, TableView<ObservableList<String>> tableview) throws SQLException {
 
+		tableview.getItems().clear();
+		tableview.getColumns().clear();
 		
-		ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
 		
 		for(int i=0 ; i<rs.getMetaData().getColumnCount(); i++){
             //We are using non property style for making dynamic table
             final int j = i;                
-            TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i+1));
             
-            col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){                    
+            TableColumn<ObservableList<String>, String> col = new TableColumn<>(rs.getMetaData().getColumnName(i+1));
+            
+            col.setPrefWidth(100);
+            col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList<String>,String>,ObservableValue<String>>(){                    
                 
-            	public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {                                                                                              
+            	public ObservableValue<String> call(CellDataFeatures<ObservableList<String>, String> param) {                                                                                              
 
             		if(param.getValue().get(j) != null) {
                 		return new SimpleStringProperty(param.getValue().get(j).toString());                        
@@ -235,14 +221,15 @@ public class AnaliserApp extends Application {
                 	return null;
                 }                    
             });
-            
-            tableview.getColumns().addAll(col); 
-            
+            tableview.getColumns().add(col);
         }
 
         /********************************
          * Data added to ObservableList *
          ********************************/
+		
+		ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
+
 		String last = "";
         while(rs.next()){
             //Iterate Row
