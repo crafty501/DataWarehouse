@@ -245,7 +245,7 @@ public class AnaliserJFrame extends JFrame {
 		return dimName;
 	}
 
-	private static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
+	private DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
 
 		ResultSetMetaData metaData = rs.getMetaData();
 		// names of columns
@@ -256,23 +256,57 @@ public class AnaliserJFrame extends JFrame {
 		}
 
 		// data of the table
+//		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+//		while (rs.next()) {
+//			Vector<Object> vector = new Vector<Object>();
+//			for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+//				vector.add(rs.getObject(columnIndex));
+//			}
+//			data.add(vector);
+//		}
+		
+		// data of the table
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		while (rs.next()) {
 			Vector<Object> vector = new Vector<Object>();
 			for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-				vector.add(rs.getObject(columnIndex));
+				
+				Object value = rs.getObject(columnIndex);
+				
+				if(value != null){
+					
+				}else{
+					value = "SUMME";
+				}
+				vector.add(value);	
 			}
 			data.add(vector);
+			
+			
 		}
+		
+//		int z = data.size() * data.get(1).size();
+//		progressBar.setMaximum(z);
+//		
+//		for(int i = 0 ; i < data.size(); i ++){
+//			
+//			for(int j = 0 ; j < data.get(i).size(); j++){
+//				Object o = data.get(i).get(j);
+//				String value = "";
+//				if(o != null){
+//					value = o.toString();
+//				}else{
+//					value = "SUMME";
+//				}
+//				//table.setValueAt(value, i, j);
+//				
+//				data.get(i).set(j,value);
+//				
+//				progressBar.setValue(progressBar.getValue() +1);
+//			}
+//		}
 
-		//TODO
-		for(int i = 0; i < 10000; i ++ ){
-			Vector<Object> vector = new Vector<Object>();
-			for(int j = 0 ; j < 10000; j++){
-				vector.add("");
-			}
-			data.add(vector);
-		}
+		
 		
 		return new DefaultTableModel(data, columnNames);
 	}
@@ -280,56 +314,65 @@ public class AnaliserJFrame extends JFrame {
 	private  void updateTable(ResultSet rs) throws SQLException {
 
 		
+		table.setModel(buildTableModel(rs));
 		
 		//clear all data in the table 
-		for(int i = 0 ; i < table.getRowCount() ; i++){
-			for(int j = 0 ; j < table.getColumnCount(); j++){
-			table.setValueAt("", i, j);
-			}
-		}
-		
-		
-		
-		ResultSetMetaData metaData = rs.getMetaData();
-		// names of columns
-		int columnCount = metaData.getColumnCount();
-		table.getColumnModel().getColumn(0).setHeaderValue(shopDimension);
-		table.getColumnModel().getColumn(1).setHeaderValue(timeDimension);
-		
-		
-
-		// data of the table
-		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-		while (rs.next()) {
-			Vector<Object> vector = new Vector<Object>();
-			for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-				vector.add(rs.getObject(columnIndex));	
-			}
-			data.add(vector);
-			
-			
-		}
-		
-		int z = data.size() * data.get(1).size();
-		progressBar.setMaximum(z);
-		
-		for(int i = 0 ; i < data.size(); i ++){
-			
-			for(int j = 0 ; j < data.get(i).size(); j++){
-				Object o = data.get(i).get(j);
-				String value = "";
-				if(o != null){
-					value = o.toString();
-				}else{
-					value = "SUMME";
-				}
-				table.setValueAt(value, i, j);
-				progressBar.setValue(progressBar.getValue() +1);
-			}
-		}
-
-		table.repaint();
-		table.getTableHeader().repaint();
+//		for(int i = 0 ; i < table.getRowCount() ; i++){
+//			for(int j = 0 ; j < table.getColumnCount(); j++){
+//			table.setValueAt("", i, j);
+//			}
+//		}
+//		
+//		for(int j = 0 ; j < table.getColumnCount(); j++){
+//			table.getColumnModel().getColumn(j).setHeaderValue("");
+//		}
+//		
+//		
+//		
+//		ResultSetMetaData metaData = rs.getMetaData();
+//		// names of columns
+//		int columnCount = metaData.getColumnCount();
+////		table.getColumnModel().getColumn(0).setHeaderValue(shopDimension);
+////		table.getColumnModel().getColumn(1).setHeaderValue(timeDimension);
+//		
+//		
+//		for (int column = 1; column <= columnCount; column++) {
+//			table.getColumnModel().getColumn().add(metaData.getColumnName(column));
+//		}
+//		
+//
+//		// data of the table
+//		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+//		while (rs.next()) {
+//			Vector<Object> vector = new Vector<Object>();
+//			for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+//				vector.add(rs.getObject(columnIndex));	
+//			}
+//			data.add(vector);
+//			
+//			
+//		}
+//		
+//		int z = data.size() * data.get(1).size();
+//		progressBar.setMaximum(z);
+//		
+//		for(int i = 0 ; i < data.size(); i ++){
+//			
+//			for(int j = 0 ; j < data.get(i).size(); j++){
+//				Object o = data.get(i).get(j);
+//				String value = "";
+//				if(o != null){
+//					value = o.toString();
+//				}else{
+//					value = "SUMME";
+//				}
+//				table.setValueAt(value, i, j);
+//				progressBar.setValue(progressBar.getValue() +1);
+//			}
+//		}
+//
+//		table.repaint();
+//		table.getTableHeader().repaint();
 	}
 
 	// String query2 = "select shop.stadt,sale.datum"+decode
