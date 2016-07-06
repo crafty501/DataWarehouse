@@ -215,7 +215,7 @@ private void updateTable(TableView<ObservableList<String>> tableview) {
             	
             	if (i == 1) {
             		if (last.equals(entry)) {
-            			row.add(null);
+            			row.add("--"+entry);
             			continue;
             		}
             		last = entry;
